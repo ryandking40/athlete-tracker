@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN_COACH
+  SPORTS_COACH
+  ATHLETE
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  firstName     String
+  lastName      String
+  hashedPassword String
+  role          UserRole
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  athlete       Athlete?  @relation("UserToAthlete")
+  coachSports   Sport[]   @relation("CoachToSports")
+}
+
+model Athlete {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation("UserToAthlete", fields: [userId], references: [id], onDelete: Cascade)
+  gender        Gender
+  graduationYear Int
+  classHours    ClassHour[]
+  sports        Sport[]
+  weightClass   WeightClass? @relation(fields: [weightClassId], references: [id])
+  weightClassId String?
+
+  // Testing Data
+  testResults   TestResult[]
+  height        Float?    // in inches
+  weight        Float?    // in pounds
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  archivedAt    DateTime?
+}
+
+model Sport {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  athletes    Athlete[]
+  coaches     User[]    @relation("CoachToSports")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ClassHour {
+  id          String    @id @default(cuid())
+  period      Int
+  athletes    Athlete[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model WeightClass {
+  id          String    @id @default(cuid())
+  name        String
+  maxWeight   Float     // in pounds
+  gender      Gender
+  athletes    Athlete[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([name, gender])
+}
+
+enum TestType {
+  BENCH_PRESS
+  SQUAT
+  CLEAN
+  INCLINE
+  TWENTY_YARD
+  FORTY_YARD
+  TEN_METER_FLY
+  PRO_AGILITY
+  VERTICAL_JUMP
+  BROAD_JUMP
+}
+
+model TestResult {
+  id          String    @id @default(cuid())
+  athleteId   String
+  athlete     Athlete   @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  type        TestType
+  value       Float
+  date        DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+} 
