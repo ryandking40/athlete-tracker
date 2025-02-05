@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Athlete Tracker
+
+A comprehensive web application for tracking and managing high school athletes' performance, with a focus on powerlifting and strength training.
+
+## Features
+
+- **Dashboard**: Central hub for quick access to all features
+- **Weightroom Management**: Track workouts, exercises, and create training sheets
+- **Data Entry & Analysis**: Record and analyze athlete performance data
+- **Competition Management**: Track meets, records, and qualifying totals
+- **Team Management**: Manage rosters and athlete information
+- **Calendar**: Schedule training sessions and competitions
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org/) - React framework for production
+- [TypeScript](https://www.typescriptlang.org/) - Type safety and better developer experience
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [Shadcn/UI](https://ui.shadcn.com/) - Re-usable components
+- [React](https://reactjs.org/) - UI library
 
 ## Getting Started
 
-First, run the development server:
-
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/athlete-tracker.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── dashboard/         # Dashboard and feature pages
+│   │   ├── weightroom/   # Weightroom management
+│   │   ├── data/        # Data entry and analysis
+│   │   ├── calendar/    # Calendar and scheduling
+│   │   └── settings/    # User settings
+│   └── layout.tsx        # Root layout
+├── components/           # Reusable UI components
+└── styles/              # Global styles
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development Mode
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Currently in design mode, using dummy data to prototype the application interface. Backend functionality will be implemented in future iterations.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](https://choosealicense.com/licenses/mit/)
