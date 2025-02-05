@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { 
   Home, 
@@ -117,6 +118,17 @@ const Sidebar = () => {
           ))}
         </ul>
       </nav>
+      <div className="p-4 border-t border-gray-200">
+        <div className="relative w-full h-[100px]">
+          <Image
+            src="/CsCardinal.png"
+            alt="CS Cardinal Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
     </div>
   );
 };
