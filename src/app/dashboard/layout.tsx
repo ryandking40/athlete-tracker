@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { Home, Calendar, Dumbbell, FileSpreadsheet, Database, Users, Settings } from "lucide-react";
+import { Home, Calendar, Dumbbell, FileSpreadsheet, Database, Users, Settings, Trophy, Medal } from "lucide-react";
 
 const Sidebar = () => {
   const menuItems = [
-    { icon: Home, label: "Community", href: "/dashboard" },
+    { icon: Home, label: "Home", href: "/dashboard" },
+    { icon: Medal, label: "Leaderboard", href: "/dashboard/leaderboard" },
+    { icon: Trophy, label: "Records", href: "/dashboard/records" },
     { icon: Calendar, label: "Calendar", href: "/dashboard/calendar" },
     { icon: Dumbbell, label: "Weightroom", href: "/dashboard/weightroom" },
     { icon: Database, label: "Data", href: "/dashboard/data" },
     { icon: Users, label: "Rosters", href: "/dashboard/rosters" },
-    { icon: FileSpreadsheet, label: "Courses", href: "/dashboard/courses" },
+    { icon: FileSpreadsheet, label: "Powerlifting", href: "/dashboard/powerlifting" },
     { icon: Settings, label: "Settings", href: "/dashboard/settings" },
   ];
 
