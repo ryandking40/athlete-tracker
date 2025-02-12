@@ -351,133 +351,9 @@ export default function WorkoutsPage() {
     exerciseForm.setValue("sets", currentSets.filter((_: SetConfig, i: number) => i !== index));
   };
 
-  const ExerciseConfigurationForm = ({ form, onSubmit, onCancel }: {
-    form: UseFormReturn<ExerciseFormValues>;
-    onSubmit: (data: ExerciseFormValues) => void;
-    onCancel: () => void;
-  }) => {
-    const addSet = () => {
-      const currentSets = form.getValues("sets") || [];
-      form.setValue("sets", [...currentSets, { reps: "", intensity: "" }]);
-    };
-
-    useEffect(() => {
-      // Initialize with one set
-      form.setValue("sets", [{ reps: "", intensity: "" }]);
-    }, [form]);
-
-    return (
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="exerciseId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Exercise</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select exercise" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {availableExercises.map(exercise => (
-                    <SelectItem key={exercise.id} value={exercise.id}>
-                      {exercise.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium">Sets Configuration</h4>
-            <Button type="button" variant="outline" size="sm" onClick={addSet}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Set
-            </Button>
-          </div>
-
-          {form.watch("sets")?.map((set: SetConfig, index: number) => (
-            <div key={index} className="space-y-4 p-4 border rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <h5 className="font-medium">Set {index + 1}</h5>
-                {index > 0 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeSet(index)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name={`sets.${index}.reps`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Reps</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., 8-10 or AMRAP" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name={`sets.${index}.intensity`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Intensity</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g., 70% 1RM or RPE 8" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Notes (optional)</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button type="submit">Add Exercise</Button>
-        </div>
-      </form>
-    );
-  };
-
   const ExerciseDialog = () => (
     <Dialog open={isAddingExercise} onOpenChange={setIsAddingExercise}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Add Exercise</DialogTitle>
         </DialogHeader>
@@ -491,6 +367,138 @@ export default function WorkoutsPage() {
       </DialogContent>
     </Dialog>
   );
+
+  const ExerciseConfigurationForm = ({ form, onSubmit, onCancel }: {
+    form: UseFormReturn<ExerciseFormValues>;
+    onSubmit: (data: ExerciseFormValues) => void;
+    onCancel: () => void;
+  }) => {
+    const [localSets, setLocalSets] = useState<SetConfig[]>([{ reps: "", intensity: "" }]);
+    const [selectedExerciseId, setSelectedExerciseId] = useState<string>("");
+    const [notes, setNotes] = useState<string>("");
+
+    const addSet = () => {
+      setLocalSets([...localSets, { reps: "", intensity: "" }]);
+    };
+
+    const removeSet = (index: number) => {
+      setLocalSets(localSets.filter((_, i) => i !== index));
+    };
+
+    const handleSetChange = (index: number, field: 'reps' | 'intensity', value: string) => {
+      const newSets = [...localSets];
+      newSets[index] = { ...newSets[index], [field]: value };
+      setLocalSets(newSets);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!selectedExerciseId) return;
+
+      const formData: ExerciseFormValues = {
+        exerciseId: selectedExerciseId,
+        sets: localSets,
+        notes: notes || undefined
+      };
+
+      onSubmit(formData);
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto pr-2">
+          <div className="space-y-4">
+            <div>
+              <FormLabel>Exercise</FormLabel>
+              <Select 
+                onValueChange={(value) => setSelectedExerciseId(value)} 
+                value={selectedExerciseId}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select exercise" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableExercises.map(exercise => (
+                    <SelectItem key={exercise.id} value={exercise.id}>
+                      {exercise.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between sticky top-0 bg-background py-2">
+                <h4 className="text-sm font-medium">Sets Configuration</h4>
+                <Button type="button" variant="outline" size="sm" onClick={addSet}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Set
+                </Button>
+              </div>
+
+              <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
+                {localSets.map((set, index) => (
+                  <div key={index} className="space-y-4 p-4 border rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="font-medium">Set {index + 1}</h5>
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeSet(index)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <FormLabel>Reps</FormLabel>
+                        <Input
+                          value={set.reps}
+                          onChange={(e) => handleSetChange(index, 'reps', e.target.value)}
+                          placeholder="e.g., 8-10 or AMRAP"
+                        />
+                      </div>
+
+                      <div>
+                        <FormLabel>Intensity</FormLabel>
+                        <Input
+                          value={set.intensity}
+                          onChange={(e) => handleSetChange(index, 'intensity', e.target.value)}
+                          placeholder="e.g., 70% 1RM or RPE 8"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <FormLabel>Notes (optional)</FormLabel>
+              <Textarea 
+                value={notes} 
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add any notes about the exercise"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4 pt-4 mt-4 border-t">
+          <Button type="button" variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={!selectedExerciseId}>
+            Add Exercise
+          </Button>
+        </div>
+      </form>
+    );
+  };
 
   const ExerciseFormDisplay = ({ exercise, onRemove }: { exercise: WorkoutExercise; onRemove: () => void }) => {
     const exerciseDetails = availableExercises.find(e => e.id === exercise.exerciseId);

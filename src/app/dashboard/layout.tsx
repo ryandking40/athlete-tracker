@@ -58,7 +58,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="h-screen w-[200px] bg-white border-r border-gray-200 flex flex-col">
+    <div className="fixed top-0 left-0 h-screen w-[200px] bg-white border-r border-gray-200 flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <h1 className="text-xl font-bold text-red-600">Athlete Tracker</h1>
       </div>
@@ -141,7 +141,7 @@ export default function DashboardLayout({
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-1 p-8">{children}</div>
+      <div className="flex-1 ml-[200px] p-8 min-h-screen">{children}</div>
     </div>
   );
 } 
